@@ -7,9 +7,8 @@
     <persistence-unit name="web4_persistence" transaction-type="JTA">
         <jta-data-source>jdbc/MyPostgresDS</jta-data-source>
         <class>se.ifmo.entity.User</class>
+        <class>se.ifmo.entity.Dot</class>
         <properties>
-            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
-            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
             <property name="eclipselink.logging.level" value="FINE"/>
         </properties>
     </persistence-unit>

@@ -14,11 +14,23 @@ public class UserService {
     private EntityManager em;
 
     @Transactional
-    public void saveUser(User user) {
+    public void addUser(User user) {
         em.persist(user);
     }
 
     public List<User> getAllUsers() {
         return em.createQuery("SELECT u FROM User u", User.class).getResultList();
+    }
+
+    public User getUserByLogin(String login) {
+        List<User> users = em.createQuery("SELECT u FROM User u WHERE u.login = :login", User.class)
+                .setParameter("login", login)
+                .getResultList();
+        return users.isEmpty() ? null : users.getFirst();
+    }
+
+    @Transactional
+    public void clearUsers() {
+        em.createQuery("DELETE FROM User").executeUpdate();
     }
 }

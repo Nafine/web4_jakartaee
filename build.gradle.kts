@@ -16,6 +16,8 @@ dependencies {
     providedCompile("jakarta.platform:jakarta.jakartaee-api:10.0.0")
     providedCompile("jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1")
     implementation("org.postgresql:postgresql:42.7.7")
+    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("commons-codec:commons-codec:1.18.0")
 }
 
 ext {

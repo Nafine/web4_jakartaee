@@ -6,8 +6,8 @@
 
     <persistence-unit name="web4_persistence" transaction-type="JTA">
         <jta-data-source>jdbc/MyPostgresDS</jta-data-source>
-        <class>se.ifmo.entity.User</class>
-        <class>se.ifmo.entity.Dot</class>
+        <class>se.ifmo.database.entity.User</class>
+        <class>se.ifmo.database.entity.Dot</class>
         <properties>
             <property name="eclipselink.logging.level" value="FINE"/>
         </properties>

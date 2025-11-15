@@ -1,15 +1,15 @@
-package se.ifmo.service.db;
+package se.ifmo.database.repository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import se.ifmo.entity.Dot;
+import se.ifmo.database.entity.Dot;
 
 import java.util.List;
 
 @ApplicationScoped
-public class DotService {
+public class DotRepository {
     @PersistenceContext(unitName = "web4_persistence")
     private EntityManager em;
 

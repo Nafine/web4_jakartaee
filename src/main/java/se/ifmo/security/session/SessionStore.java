@@ -28,7 +28,6 @@ public class SessionStore {
         }
 
         sessions.put(Base64.getEncoder().encodeToString(id), uid);
-        System.out.println("Added " + Base64.getEncoder().encodeToString(id) + " to session store");
         return Base64.getEncoder().encodeToString(id);
     }
 

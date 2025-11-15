@@ -1,4 +1,4 @@
-package se.ifmo.filter.auth;
+package se.ifmo.security.filter.auth;
 
 import jakarta.ws.rs.NameBinding;
 

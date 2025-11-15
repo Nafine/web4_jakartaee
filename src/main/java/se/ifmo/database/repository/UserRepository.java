@@ -1,15 +1,15 @@
-package se.ifmo.service.db;
+package se.ifmo.database.repository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import se.ifmo.entity.User;
+import se.ifmo.database.entity.User;
 
 import java.util.List;
 
 @ApplicationScoped
-public class UserService {
+public class UserRepository {
     @PersistenceContext(unitName = "web4_persistence")
     private EntityManager em;
 

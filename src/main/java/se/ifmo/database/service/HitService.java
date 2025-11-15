@@ -1,15 +1,15 @@
-package se.ifmo.service;
+package se.ifmo.database.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import se.ifmo.api.request.HitRequest;
+import se.ifmo.api.hit.HitRequest;
 
 @ApplicationScoped
-public class HitChecker {
+public class HitService {
 
     public boolean checkHit(HitRequest hitRequest) {
-        double x = hitRequest.getX();
-        double y = hitRequest.getY();
-        double r = hitRequest.getR();
+        double x = hitRequest.x();
+        double y = hitRequest.y();
+        double r = hitRequest.r();
 
         return (Math.abs(x) <= r && Math.abs(y) <= r
                 && ((x <= 0 && y <= 0 && (Math.abs(x) + 2 * Math.abs(y) <= r))

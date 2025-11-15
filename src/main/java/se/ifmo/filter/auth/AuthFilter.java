@@ -9,7 +9,7 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
-import se.ifmo.api.AuthResponse;
+import se.ifmo.api.response.AuthResponse;
 import se.ifmo.security.session.SessionStore;
 
 @Provider
@@ -23,12 +23,12 @@ public class AuthFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
-        Cookie sessionCookie = requestContext.getCookies().get("session");
+        Cookie sessionCookie = requestContext.getCookies().get("sessionid");
 
         if (sessionCookie == null) {
             requestContext.abortWith(Response
                             .status(Response.Status.UNAUTHORIZED)
-                            .entity(gson.toJson(AuthResponse.success()))
+                            .entity(gson.toJson(AuthResponse.fail()))
                             .build());
             return;
         }

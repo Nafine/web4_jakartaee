@@ -1,4 +1,4 @@
-package se.ifmo.db;
+package se.ifmo.service.db;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
@@ -22,11 +22,15 @@ public class UserService {
         return em.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
-    public User getUserByLogin(String login) {
-        List<User> users = em.createQuery("SELECT u FROM User u WHERE u.login = :login", User.class)
-                .setParameter("login", login)
+    public User getUserByName(String name) {
+        List<User> users = em.createQuery("SELECT u FROM User u WHERE u.name = :name", User.class)
+                .setParameter("name", name)
                 .getResultList();
         return users.isEmpty() ? null : users.getFirst();
+    }
+
+    public User getUserById(Long uid){
+        return em.getReference(User.class, uid);
     }
 
     @Transactional

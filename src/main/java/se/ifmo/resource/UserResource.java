@@ -4,20 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.NewCookie;
-import jakarta.ws.rs.core.Request;
 import jakarta.ws.rs.core.Response;
 import org.apache.commons.codec.digest.DigestUtils;
-import se.ifmo.api.AuthResponse;
-import se.ifmo.db.UserService;
+import se.ifmo.api.request.UserRequest;
+import se.ifmo.api.response.AuthResponse;
 import se.ifmo.entity.User;
 import se.ifmo.filter.auth.AuthRequired;
 import se.ifmo.security.session.SessionStore;
+import se.ifmo.service.db.UserService;
 
 @Path("/api")
 @ApplicationScoped
@@ -32,26 +29,31 @@ public class UserResource {
     }
 
     @POST
-    @Path("user")
+    @Path("register")
     @Consumes("application/json")
-    public Response registerUser(String userJson) {
+    public Response register(String userJson) {
         try {
-            User user = gson.fromJson(userJson, User.class);
+            UserRequest user = gson.fromJson(userJson, UserRequest.class);
             if (user.getLogin() == null || user.getPassword() == null) {
                 return Response
                         .status(Response.Status.BAD_REQUEST)
                         .entity("Provide all required fields")
                         .build();
-            } else if (userService.getUserByLogin(user.getLogin()) != null) {
+            } else if (userService.getUserByName(user.getLogin()) != null) {
                 return Response
                         .status(Response.Status.BAD_REQUEST)
                         .entity("Such user already exists")
                         .build();
             }
-            userService.addUser(user);
+            User newUser = new User();
+            newUser.setName(user.getLogin());
+            newUser.setPassword(user.getPassword());
+            userService.addUser(newUser);
+
             NewCookie cookie = new NewCookie.Builder("sessionid")
-                    .value(sessionStore.generateSession())
+                    .value(sessionStore.generateSession(newUser.getId()))
                     .maxAge(86400)
+                    .path("/")
                     .httpOnly(true)
                     .build();
             return Response
@@ -66,33 +68,22 @@ public class UserResource {
         }
     }
 
-    @Path("auth")
-    @POST
-    @Produces("application/json")
-    @AuthRequired
-    public Response checkToken() {
-        return Response
-                .ok(gson.toJson(AuthResponse.success()))
-                .build();
-    }
-
-    @Path("auth")
+    @Path("login")
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response authUser(String userJson, @Context Request req) {
+    public Response login(String userJson) {
         try {
-            User user = gson.fromJson(userJson, User.class);
-            User storedUser = userService.getUserByLogin(user.getLogin());
+            UserRequest user = gson.fromJson(userJson, UserRequest.class);
+            User storedUser = userService.getUserByName(user.getLogin());
             if (storedUser != null && storedUser.getPassword().equals(
                     DigestUtils.sha256Hex(user.getPassword() + storedUser.getHash()))) {
                 NewCookie cookie = new NewCookie.Builder("sessionid")
-                        .value(sessionStore.generateSession())
+                        .value(sessionStore.generateSession(storedUser.getId()))
                         .maxAge(86400)
                         .httpOnly(true)
+                        .path("/")
                         .build();
-
-                System.out.println("Success");
                 return Response
                         .ok(gson.toJson(AuthResponse.success()))
                         .cookie(cookie)
@@ -109,5 +100,22 @@ public class UserResource {
                     .entity("Invalid JSON")
                     .build();
         }
+    }
+
+    @Path("login")
+    @POST
+    @Produces("application/json")
+    @AuthRequired
+    public Response checkToken() {
+        return Response
+                .ok(gson.toJson(AuthResponse.success()))
+                .build();
+    }
+
+    @Path("logout")
+    @POST
+    @AuthRequired
+    public void logout(@CookieParam("sessionid") Cookie cookie) {
+        sessionStore.removeSession(cookie.getValue());
     }
 }

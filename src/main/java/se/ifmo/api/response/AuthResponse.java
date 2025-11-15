@@ -1,4 +1,4 @@
-package se.ifmo.api;
+package se.ifmo.api.response;
 
 import lombok.*;
 

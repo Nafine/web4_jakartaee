@@ -1,7 +1,10 @@
 package se.ifmo.entity;
 
 import jakarta.persistence.*;
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,14 +12,13 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
-@XmlRootElement(name="product")
+@XmlRootElement(name = "product")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class User {
     @Id
@@ -25,15 +27,12 @@ public class User {
 
     @XmlElement(required = true)
     @Column(nullable = false)
-    private String login;
+    private String name;
     @XmlElement(required = true)
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
     private String hash;
-
-    @OneToMany(mappedBy = "user")
-    private List<Dot> dots;
 
     @PrePersist
     protected void onCreate() {

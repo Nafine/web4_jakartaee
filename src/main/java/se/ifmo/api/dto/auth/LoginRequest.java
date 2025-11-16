@@ -1,4 +1,4 @@
-package se.ifmo.api.auth;
+package se.ifmo.api.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 

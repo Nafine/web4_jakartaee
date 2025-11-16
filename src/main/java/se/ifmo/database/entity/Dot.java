@@ -1,44 +1,31 @@
 package se.ifmo.database.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import se.ifmo.api.hit.HitRequest;
-import se.ifmo.api.hit.HitResponse;
+import lombok.*;
+import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+@Builder
 public class Dot {
     @Id
     @GeneratedValue
-    @JsonIgnore
     private Long id;
 
     private Double x;
     private Double y;
     private Double r;
-    private Boolean hit;
-    private Long execution_time;
+    private Boolean result;
+    private LocalDateTime timestamp;
+    private Integer executionTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",
-            nullable = false,
-            foreignKey = @ForeignKey(name = "fk_dot_user_id")
-    )
-    @JsonIgnore
+    @JoinColumn(name = "user_id", nullable = false)
     private User owner;
-
-    public Dot(HitRequest req, HitResponse resp, User owner) {
-        x = req.x();
-        y = req.y();
-        r = req.r();
-
-        hit = resp.hit();
-        execution_time = resp.executionTime();
-        this.owner = owner;
-    }
 }

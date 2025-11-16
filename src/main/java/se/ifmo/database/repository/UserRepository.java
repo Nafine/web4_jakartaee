@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import se.ifmo.database.entity.User;
 
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class UserRepository {
@@ -14,12 +15,8 @@ public class UserRepository {
     private EntityManager em;
 
     @Transactional
-    public void addUser(User user) {
+    public void saveUser(User user) {
         em.persist(user);
-    }
-
-    public List<User> getAllUsers() {
-        return em.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
     public User getUserByName(String name) {
@@ -29,12 +26,14 @@ public class UserRepository {
         return users.isEmpty() ? null : users.getFirst();
     }
 
-    public User getUserById(Long uid){
-        return em.getReference(User.class, uid);
+    public User getUserById(UUID uuid) {
+        return em.getReference(User.class, uuid);
     }
 
-    @Transactional
-    public void clearUsers() {
-        em.createQuery("DELETE FROM User").executeUpdate();
+    public boolean exists(String name) {
+        return em.createQuery(
+                        "SELECT COUNT(u) FROM User u WHERE u.name = :name", Long.class)
+                .setParameter("name", name)
+                .getSingleResult() > 0;
     }
 }

@@ -8,6 +8,7 @@
         <jta-data-source>jdbc/MyPostgresDS</jta-data-source>
         <class>se.ifmo.database.entity.User</class>
         <class>se.ifmo.database.entity.Dot</class>
+        <class>se.ifmo.database.entity.RefreshToken</class>
         <properties>
             <property name="eclipselink.logging.level" value="FINE"/>
         </properties>

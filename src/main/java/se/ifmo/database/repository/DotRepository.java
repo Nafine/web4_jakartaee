@@ -7,24 +7,25 @@ import jakarta.transaction.Transactional;
 import se.ifmo.database.entity.Dot;
 
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class DotRepository {
     @PersistenceContext(unitName = "web4_persistence")
     private EntityManager em;
 
-    public List<Dot> getDotsByUid(Long uid) {
+    public List<Dot> getDotsByUuid(UUID uuid) {
         return em.createQuery("""
                         SELECT d FROM Dot d
-                        WHERE d.owner.id = :uid
+                        WHERE d.owner.uuid = :uuid
                         ORDER BY d.id
                         """, Dot.class)
-                .setParameter("uid", uid)
+                .setParameter("uuid", uuid)
                 .getResultList();
     }
 
     @Transactional
-    public void putDot(Dot dot) {
+    public void saveDot(Dot dot) {
         em.persist(dot);
     }
 }

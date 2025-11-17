@@ -17,6 +17,7 @@ dependencies {
     providedCompile("jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1")
 
     implementation("org.postgresql:postgresql:42.7.7")
+
     implementation("org.eclipse.persistence:org.eclipse.persistence.jpa:4.0.4")
 
     implementation("com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider:2.19.2")
@@ -40,7 +41,7 @@ ext {
 
 val copyPostgresDriver by tasks.registering(Copy::class) {
     from(configurations.runtimeClasspath) {
-        include("postgresql-*.jar")
+        include("postgresql*.jar")
     }
     into("build/wlp/usr/shared/resources")
 

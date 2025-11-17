@@ -4,7 +4,6 @@ import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Cookie;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
@@ -26,7 +25,6 @@ public class AuthResource {
     @Inject
     private AuthService authService;
 
-
     @POST
     @Path("register")
     public Response register(@Valid LoginRequest req) {
@@ -47,7 +45,6 @@ public class AuthResource {
     public Response login(@Valid LoginRequest req) {
         try {
             TokenPair tokenPair = userService.login(req.login(), req.password());
-
             return makeTokenResponse(tokenPair);
         } catch (InvalidCredentials e) {
             return Response
@@ -57,7 +54,7 @@ public class AuthResource {
         }
     }
 
-    @Path("/refresh")
+    @Path("refresh")
     @POST
     public Response refresh(@NotNull @CookieParam("refresh-token") String refreshToken) {
         try {
@@ -70,9 +67,9 @@ public class AuthResource {
 
     @Path("logout")
     @POST
-    public Response logout(@CookieParam("refresh-token") Cookie cookie) {
+    public Response logout(@CookieParam("refresh-token") String refreshToken) {
         try {
-            authService.invalidateRefresh(cookie.getValue());
+            authService.invalidateRefresh(refreshToken);
             return Response.ok().build();
         } catch (AuthException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();

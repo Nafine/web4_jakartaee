@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -22,8 +22,8 @@ public class Dot {
     private Double y;
     private Double r;
     private Boolean result;
-    private LocalDateTime timestamp;
-    private Integer executionTime;
+    private Instant timestamp;
+    private Long executionTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

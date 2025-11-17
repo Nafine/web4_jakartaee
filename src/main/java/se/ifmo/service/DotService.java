@@ -3,12 +3,14 @@ package se.ifmo.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import se.ifmo.api.dto.dot.DotDto;
+import se.ifmo.api.dto.dot.PageDto;
 import se.ifmo.database.entity.Dot;
 import se.ifmo.database.mapper.DotMapper;
-import se.ifmo.database.mapper.DotMapperImpl;
 import se.ifmo.database.repository.DotRepository;
 import se.ifmo.database.repository.UserRepository;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,8 +22,6 @@ public class DotService {
     private DotRepository dotRepository;
     @Inject
     private UserRepository userRepository;
-    @Inject
-    private DotMapperImpl dotMapperImpl;
     @Inject
     private UserService userService;
 
@@ -37,20 +37,33 @@ public class DotService {
     }
 
     public void saveDot(DotDto dotDto, String userId) {
-        Dot dot = dotMapperImpl.toEntity(dotDto)
+        Dot dot = dotMapper.toEntity(dotDto)
                 .setResult(checkHit(dotDto))
-                .setExecutionTime(100)
+                .setExecutionTime(Duration.between(dotDto.timestamp(), Instant.now()).toMillis())
                 .setOwner(userRepository.getUserById(UUID.fromString(userId)));
 
         dotRepository.saveDot(dot);
     }
 
-    public List<Dot> getDots(int page, int size, String userId) {
+    public PageDto getPage(int page, int size, String userId) {
         List<Dot> dots = dotRepository.getDotsByUuid(UUID.fromString(userId));
 
         int from = (page - 1) * size;
         int to = Math.min(dots.size(), page * size);
 
-        return dots.subList(from, to);
+        boolean hasNext = to != dots.size();
+
+        return new PageDto(dots.subList(from, to).stream().map(dotMapper::toDto).toList(), page, hasNext);
+    }
+
+    public PageDto getLastPage(int size, String userId) {
+        List<Dot> dots = dotRepository.getDotsByUuid(UUID.fromString(userId));
+
+        int page = (dots.size() + size - 1) / size;
+
+        int from = (page - 1) * size;
+        int to = dots.size();
+
+        return new PageDto(dots.subList(from, to).stream().map(dotMapper::toDto).toList(), page, false);
     }
 }

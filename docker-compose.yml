@@ -1,0 +1,29 @@
+services:
+  backend:
+    image: web4
+    container_name: web4
+    ports:
+      - '9080:9080'
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    networks:
+      - default
+  postgres:
+    image: postgres:16.0
+    container_name: web4_db
+    environment:
+      POSTGRES_USER: bigbob
+      POSTGRES_PASSWORD: 4823
+      POSTGRES_DB: web4_db
+    ports:
+      - '5432:5432'
+    networks:
+      - default
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:
+networks:
+  default:
+    driver: bridge

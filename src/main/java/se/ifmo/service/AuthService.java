@@ -78,7 +78,7 @@ public class AuthService {
         throw new AuthException("Invalid refresh token");
     }
 
-    public void invalidateRefresh(String token) throws AuthException{
+    public void invalidateRefresh(String token) throws AuthException {
         Claims claims;
         try {
             claims = jwtParser.parseSignedClaims(token).getPayload();

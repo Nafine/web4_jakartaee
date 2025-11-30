@@ -9,8 +9,6 @@ import se.ifmo.database.mapper.DotMapper;
 import se.ifmo.database.repository.DotRepository;
 import se.ifmo.database.repository.UserRepository;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +37,7 @@ public class DotService {
     public void saveDot(DotDto dotDto, String userId) {
         Dot dot = dotMapper.toEntity(dotDto)
                 .setResult(checkHit(dotDto))
-                .setExecutionTime(Duration.between(dotDto.timestamp(), Instant.now()).toMillis())
+                .setExecutionTime(System.currentTimeMillis() - dotDto.timestamp())
                 .setOwner(userRepository.getUserById(UUID.fromString(userId)));
 
         dotRepository.saveDot(dot);
@@ -59,7 +57,7 @@ public class DotService {
     public PageDto getLastPage(int size, String userId) {
         List<Dot> dots = dotRepository.getDotsByUuid(UUID.fromString(userId));
 
-        int page = (dots.size() + size - 1) / size;
+        int page = Math.max(1, (dots.size() + size - 1) / size);
 
         int from = (page - 1) * size;
         int to = dots.size();

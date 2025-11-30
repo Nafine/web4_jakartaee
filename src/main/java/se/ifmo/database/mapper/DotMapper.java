@@ -10,7 +10,9 @@ import se.ifmo.database.entity.Dot;
 public interface DotMapper {
     @Mapping(target="id", ignore=true)
     @Mapping(target="owner", ignore=true)
+    @Mapping(target="timestamp", expression="java(java.time.Instant.ofEpochMilli(req.timestamp()))")
     Dot toEntity(DotDto req);
 
+    @Mapping(target="timestamp", expression="java(dot.getTimestamp().toEpochMilli())")
     DotDto toDto(Dot dot);
 }

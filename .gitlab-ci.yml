@@ -5,6 +5,11 @@ variables:
   IMAGE_NAME: web4_jakartaee
   FULL_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}
 
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
 build_job:
   stage: stage_build
   rules:
@@ -15,6 +20,7 @@ build_job:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - ./gradlew build
+    - ls; ls build
   script:
     - echo '--- Build Started ---'
     - docker build -t ${FULL_IMAGE}:latest .

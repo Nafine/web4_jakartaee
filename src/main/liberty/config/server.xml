@@ -23,8 +23,8 @@
     <dataSource id="eventjpadatasource" jndiName="jdbc/MyPostgresDS">
         <jdbcDriver libraryRef="postgresJDBCLib"/>
         <properties.postgresql
-                databaseName="web4_db"
-                serverName="web4_db"
+                databaseName="web4-db"
+                serverName="web4-db"
                 portNumber="5432"
                 user="bigbob"
                 password="4823" />

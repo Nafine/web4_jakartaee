@@ -5,7 +5,6 @@ variables:
   IMAGE_NAME: web4_jakartaee
   FULL_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}
 
-
 build_job:
   stage: stage_build
   rules:
@@ -15,9 +14,14 @@ build_job:
     - shell
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - ./gradlew build
   script:
     - echo '--- Build Started ---'
     - docker build -t ${FULL_IMAGE}:latest .
     - docker push ${FULL_IMAGE}:latest
     - echo '--- Build Completed ---'
+  after_script:
+  - echo "--- Cleaning up ---"
+  - ./gradlew clean
+  - усрщ "--- Cleaned up ---"
 

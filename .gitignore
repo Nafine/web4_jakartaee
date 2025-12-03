@@ -1,5 +1,4 @@
 .idea
-server.xml
 .gradle
 gradlew*
 gradle

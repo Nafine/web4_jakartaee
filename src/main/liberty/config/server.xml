@@ -1,0 +1,34 @@
+<server description="New Server">
+    <featureManager>
+        <platform>jakartaee-10.0</platform>
+        <feature>restfulWS</feature>
+        <feature>cdi</feature>
+        <feature>persistence</feature>
+        <feature>validation</feature>
+    </featureManager>
+
+    <webApplication location="web4-0.1.war" contextRoot="/web4"/>
+
+    <httpEndpoint httpPort="9080" httpsPort="9081" id="defaultHttpEndpoint" host="*">
+        <accessLogging enabled="true"
+                       logFormat='%h %l %u %t "%r" %s %b %D'
+                       filePath="${server.output.dir}/logs/http_access.log"/>
+    </httpEndpoint>
+
+    <authData id="db_auth" user="bigbob" password="4823"/>
+
+    <library id="postgresJDBCLib">
+        <fileset dir="${shared.resource.dir}/" includes="postgresql*.jar" />
+    </library>
+    <dataSource id="eventjpadatasource" jndiName="jdbc/MyPostgresDS">
+        <jdbcDriver libraryRef="postgresJDBCLib"/>
+        <properties.postgresql
+                databaseName="web4_db"
+                serverName="web4_db"
+                portNumber="5432"
+                user="bigbob"
+                password="4823" />
+    </dataSource>
+
+    <logging traceSpecification="*=info:com.ibm.ws.cdi.*=fine:jakarta.persistence.*=fine:com.ibm.ws.jpa.*=fine:*=info:com.ibm.ws.webcontainer*=all"/>
+</server>

@@ -23,5 +23,5 @@ build_job:
   after_script:
   - echo "--- Cleaning up ---"
   - ./gradlew clean
-  - усрщ "--- Cleaned up ---"
+  - echo "--- Cleaned up ---"
 

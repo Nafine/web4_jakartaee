@@ -20,8 +20,8 @@ build_job:
   before_script:
     - apk add --no-cache openjdk21
     - java -version      
-    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - echo ${FULL_IMAGE}
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - ./gradlew libertyPackage
   script:
     - echo '--- Build Started ---'

@@ -11,6 +11,9 @@ cache:
     - .gradle/caches
 
 build_job:
+  image: docker:24.0.5-cli
+  services:
+    - docker:24.0.5-dind
   stage: stage_build
   rules:
     - if: $CI_COMMIT_BRANCH == "main"

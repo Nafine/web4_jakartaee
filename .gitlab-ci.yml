@@ -12,7 +12,7 @@ build_java:
   tags:
     - kubernetes
   script:
-    - ./gradlew assemble
+    - ./gradlew libertyPackage
   artifacts:
     paths:
       - build/wlp/usr/shared/resources/*.jar

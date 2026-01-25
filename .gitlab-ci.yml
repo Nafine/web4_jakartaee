@@ -1,5 +1,6 @@
 stages:
-  - stage_build
+  - build
+  - package
 
 variables:
   IMAGE_NAME: web4_jakartaee
@@ -10,28 +11,25 @@ cache:
     - .gradle/wrapper
     - .gradle/caches
 
-build_job:
-  image: docker:29.1.5-cli
+build_java:
+  stage: build
+  image: eclipse-temurin:21-jdk-alpine
+  script:
+    - ./gradlew assemble
+  artifacts:
+    paths:
+      - build/libs/*.jar
+
+build_image:
+  stage: package
+  image: docker:24.0.9-cli
   services:
-    - docker:29.1.5-dind
-  stage: stage_build
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-      when: on_success
+    - docker:24.0.9-dind
+  needs:
+    - build_java
   tags:
     - docker
-  before_script:
-    - apk add --no-cache openjdk21
-    - java -version      
-    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
-    - ./gradlew libertyPackage
   script:
-    - echo '--- Build Started ---'
-    - docker build -t ${FULL_IMAGE}:latest .
-    - docker push ${FULL_IMAGE}:latest
-    - echo '--- Build Completed ---'
-  after_script:
-  - echo "--- Cleaning up ---"
-  - ./gradlew clean
-  - echo "--- Cleaned up ---"
+    - docker build -t $FULL_IMAGE .
+    - docker push $FULL_IMAGE
 

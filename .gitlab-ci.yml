@@ -19,7 +19,7 @@ build_job:
     - if: $CI_COMMIT_BRANCH == "main"
       when: on_success
   tags:
-    - docker
+    - shared
   before_script:
     - apk add --no-cache openjdk21
     - java -version      

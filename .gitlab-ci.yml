@@ -6,25 +6,23 @@ variables:
   IMAGE_NAME: web4_jakartaee
   FULL_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}
 
-cache:
-  paths:
-    - .gradle/wrapper
-    - .gradle/caches
-
 build_java:
-  stage: build
   image: eclipse-temurin:21-jdk-alpine
+  stage: build
+  tags:
+    - kubernetes
   script:
     - ./gradlew assemble
   artifacts:
     paths:
-      - build/libs/*.jar
+      - build/wlp/usr/shared/resources/*.jar
+      - build/libs/*.war
 
 build_image:
-  stage: package
-  image: docker:24.0.9-cli
+  image: docker:29.1.5-cli
   services:
-    - docker:24.0.9-dind
+    - docker:29.1.5-dind
+  stage: package
   needs:
     - build_java
   tags:

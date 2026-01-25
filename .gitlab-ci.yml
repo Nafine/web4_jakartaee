@@ -27,6 +27,8 @@ build_image:
     - build_java
   tags:
     - docker
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   script:
     - docker build -t $FULL_IMAGE .
     - docker push $FULL_IMAGE

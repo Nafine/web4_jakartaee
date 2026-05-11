@@ -1,4 +1,4 @@
-FROM icr.io/appcafe/open-liberty:kernel-slim-java21-openj9-ubi-minimal
+FROM gitlab-cr.dc.lysmux.dev/nafine/web4_jakartaee:kernel-slim-java21-openj9-ubi-minimal
 
 USER root
 

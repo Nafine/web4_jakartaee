@@ -1,35 +1,23 @@
 stages:
-  - build
-  - package
-
-variables:
-  IMAGE_NAME: web4_jakartaee
-  FULL_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}
-
-build_java:
-  image: eclipse-temurin:21-jdk-alpine
-  stage: build
-  tags:
-    - kubernetes
-  script:
-    - ./gradlew libertyPackage
-  artifacts:
-    paths:
-      - build/wlp/usr/shared/resources/*.jar
-      - build/libs/*.war
+  - build_image
 
 build_image:
-  image: docker:29.1.5-cli
+  image: docker:24.0.5-cli
   services:
-    - docker:29.1.5-dind
-  stage: package
-  needs:
-    - build_java
-  tags:
-    - docker
+    - name: docker:24.0.5-dind
+      variables:
+        HEALTHCHECK_TCP_PORT: "2375"
+  stage: build_image
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   script:
-    - docker build -t $FULL_IMAGE .
-    - docker push $FULL_IMAGE
-
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_MERGE_REQUEST_IID

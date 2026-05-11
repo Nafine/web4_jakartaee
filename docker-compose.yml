@@ -1,6 +1,7 @@
 services:
   backend:
-    image: web4
+    build:
+      context: .
     container_name: web4
     ports:
       - '9080:9080'

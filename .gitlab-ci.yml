@@ -15,7 +15,7 @@ build_java:
         - gradle/wrapper/gradle-wrapper.properties
     paths:
       - .gradle/wrapper
-      - .gradle/cache
+      - .gradle/caches
     policy: pull-push
   script:
     - ./gradlew libertyPackage

@@ -1,5 +1,22 @@
 stages:
-  - build_image
+  - build
+  - package
+
+variables:
+  IMAGE_NAME: web4_jakartaee
+  FULL_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}
+
+build_java:
+  image: eclipse-temurin:21-jdk-alpine
+  stage: build
+  tags:
+    - kubernetes
+  script:
+    - ./gradlew libertyPackage
+  artifacts:
+    paths:
+      - build/wlp/usr/shared/resources/*.jar
+      - build/libs/*.war
 
 build_image:
   image: docker:24.0.5-cli
@@ -7,7 +24,7 @@ build_image:
     - name: docker:24.0.5-dind
       variables:
         HEALTHCHECK_TCP_PORT: "2375"
-  stage: build_image
+  stage: package
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""

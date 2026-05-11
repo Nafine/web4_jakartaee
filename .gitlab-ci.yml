@@ -3,14 +3,20 @@ stages:
   - package
 
 variables:
-  IMAGE_NAME: web4_jakartaee
-  FULL_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${IMAGE_NAME}
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
 build_java:
   image: eclipse-temurin:21-jdk-alpine
   stage: build
-  tags:
-    - kubernetes
+  cache:
+    key:
+      files:
+        - build.gradle
+        - gradle/wrapper/gradle-wrapper.properties
+    paths:
+      - .gradle/wrapper
+      - .gradle/cache
+    policy: pull-push
   script:
     - ./gradlew libertyPackage
   artifacts:

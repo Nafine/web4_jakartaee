@@ -11,7 +11,7 @@ build_java:
   cache:
     key:
       files:
-        - build.gradle.kts
+        - build.gradle
         - gradle/wrapper/gradle-wrapper.properties
     paths:
       - .gradle/wrapper
@@ -21,7 +21,7 @@ build_java:
     - ./gradlew libertyPackage
   artifacts:
     paths:
-      - build/wlp
+      - build/wlp/usr/shared/resources/*.jar
       - build/libs/*.war
 
 build_image:

@@ -1,10 +1,6 @@
 <server description="New Server">
     <featureManager>
-        <platform>jakartaee-10.0</platform>
-        <feature>restfulWS</feature>
-        <feature>cdi</feature>
-        <feature>persistence</feature>
-        <feature>validation</feature>
+        <feature>jakartaee-10.0</feature>
     </featureManager>
 
     <webApplication location="web4-0.1.war" contextRoot="/web4"/>
@@ -30,5 +26,10 @@
                 password="4823" />
     </dataSource>
 
-    <logging traceSpecification="*=info:com.ibm.ws.cdi.*=fine:jakarta.persistence.*=fine:com.ibm.ws.jpa.*=fine:*=info:com.ibm.ws.webcontainer*=all"/>
+    <logging consoleLogLevel="INFO"
+             messageFileName="messages.log"
+             traceFileName="trace.log"
+             maxFileSize="50"
+             maxFiles="3"
+             traceSpecification="*=info:com.ibm.ws.app.manager.*=all:com.ibm.ws.container.*=all:com.ibm.ws.classloading.*=all:com.ibm.ws.cdi.*=all"/>
 </server>

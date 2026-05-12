@@ -8,6 +8,12 @@ plugins {
 group = "se.ifmo"
 version = "0.1"
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -38,12 +44,17 @@ ext {
     liberty.server.`var`["app.context.root"] = project.name
 }
 
+liberty {
+    server.features.acceptLicense = true
+    server.configDirectory = file("src/main/liberty/config")
+    install.runtimeUrl = null
+}
+
 val copyPostgresDriver by tasks.registering(Copy::class) {
     from(configurations.runtimeClasspath) {
         include("postgresql*.jar")
     }
     into("build/wlp/usr/shared/resources")
-
     doFirst {
         println("Copying PostgreSQL driver to: build/wlp/usr/shared/resources")
     }

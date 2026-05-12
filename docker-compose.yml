@@ -1,7 +1,6 @@
 services:
   backend:
-    build:
-      context: .
+    image: web4
     container_name: web4
     ports:
       - '9080:9080'
@@ -17,8 +16,6 @@ services:
       POSTGRES_USER: bigbob
       POSTGRES_PASSWORD: 4823
       POSTGRES_DB: web4_db
-    ports:
-      - '5432:5432'
     networks:
       - default
     volumes:

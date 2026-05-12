@@ -8,6 +8,7 @@ import se.ifmo.database.entity.Dot;
 import se.ifmo.database.mapper.DotMapper;
 import se.ifmo.database.repository.DotRepository;
 import se.ifmo.database.repository.UserRepository;
+import se.ifmo.mbean.DotCounterService;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,8 @@ public class DotService {
     private UserRepository userRepository;
     @Inject
     private UserService userService;
+    @Inject
+    private DotCounterService dotCounterService;
 
     private boolean checkHit(DotDto hitRequest) {
         double x = hitRequest.x();
@@ -35,12 +38,14 @@ public class DotService {
     }
 
     public void saveDot(DotDto dotDto, String userId) {
+        boolean hit = checkHit(dotDto);
         Dot dot = dotMapper.toEntity(dotDto)
-                .setResult(checkHit(dotDto))
+                .setResult(hit)
                 .setExecutionTime(System.currentTimeMillis() - dotDto.timestamp())
                 .setOwner(userRepository.getUserById(UUID.fromString(userId)));
 
         dotRepository.saveDot(dot);
+        dotCounterService.recordPoint(hit);
     }
 
     public PageDto getPage(int page, int size, String userId) {
